@@ -1,7 +1,9 @@
 # CTp Processing Pipeline
 
+<!--
 **Author:** Rigoni Filippo  
 **Contact:** flpp.rigoni@gmail.com
+-->
 
 This repository contains MATLAB code for processing CT perfusion (CTp) data. It provides an implementation of a pipeline that starts from raw DICOM files acquired in a VPCT series and computes quantitative parameter maps, including cerebral blood flow (CBF), cerebral blood volume (CBV), mean transit time (MTT), and time-to-maximum (TMAX). Different SVD‐based deconvolution algorithms are used to estimate residue functions.
 
