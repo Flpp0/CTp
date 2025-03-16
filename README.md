@@ -56,50 +56,60 @@ The pipeline consists of the following sequential steps:
 
 Due to data privacy restrictions, only the code (and anonymized sample images) are provided in this repository.
 
-## Directory Structure
-
 ```
 CTp_matlab/
-├── main.m                % Main script controlling the CTp processing pipeline
-├── loadDicomData.m       % Loads DICOM data and extracts metadata
-├── getVPCTDescription.m  % Extracts the VPCT series description from metadata
-├── loadVPCTImages.m      % Loads VPCT images and retrieves pixel spacing
-├── fillNaNPixels.m       % Fills missing pixel spacing values
-├── sortImages.m          % Sorts images by slice and time
-├── applyGaussianFilter.m % Applies Gaussian filtering for noise reduction
-├── constructVolumes.m    % Assembles 2D slices into 3D volumes
-├── upsampleVolumes.m     % Upsamples volumes in the z-direction using spline interpolation
-├── registerVolumes.m     % Performs 3D rigid registration on volumes
-├── extractRegistrationParams.m  % Extracts translation and rotation parameters from registration transforms
-├── plotRegistrationParameters.m % Plots registration parameters over time
-├── correctImagePositioning.m    % Adjusts slice ordering post-registration
-├── displayVolumes.m      % Displays original versus registered volumes
-├── performSkullStripping.m % Computes mean slices and generates brain masks
-├── computePrincipalAxes.m  % Computes principal axes via PCA on brain masks
-├── calculateTCCs.m       % Calculates Tissue Concentration Curves (TCCs) with outlier removal
-├── computeGlobalAIF.m    % Computes the global Arterial Input Function (AIF)
-├── computeGlobalVOF.m    % Computes the global Venous Output Function (VOF)
-├── computeResidueFunctions_sSVD.m  % Computes residue functions using sSVD deconvolution
-├── computeResidueFunctions_cSVD.m  % Computes residue functions using cSVD deconvolution
-├── computeResidueFunctions_oSVD.m  % Computes residue functions using oSVD deconvolution
-├── computePerfusionMapsAll.m       % Computes and displays perfusion maps (CBF, CBV, MTT, TMAX)
-└── docs/                % Contains sample images and extended documentation
-    ├── PrincipalAxes_LR.png         % Left-right principal component image
-    ├── PrincipalAxes_TB.png         % Top-bottom principal component image
-    ├── GlobalAIF_voxels_slice1.png    % AIF voxel locations on a representative slice
-    ├── GlobalVOF_voxels_slice1.png    % VOF voxel locations on a representative slice
-    ├── AIF_VOF_Scaled.png             % Scaled AIF and corresponding VOF curve plot
-    ├── CBF_slice.png                  % Perfusion map for CBF on a representative slice
-    ├── CBV_slice.png                  % Perfusion map for CBV on a representative slice
-    ├── MTT_slice.png                  % Perfusion map for MTT on a representative slice
-    └── TMAX_slice.png                 % Perfusion map for TMAX on a representative slice
+│
+├── main_CTp.m                       # Main pipeline controller
+│
+├── fun/                            # Functions directory
+│   │
+│   ├── # Data Loading
+│   │   ├── loadDicomData.m              # DICOM data and metadata import
+│   │   ├── getVPCTDescription.m         # VPCT series identification
+│   │   ├── loadVPCTImages.m             # Image loading with pixel spacing
+│   │   ├── fillNaNPixels.m              # Missing values handling
+│   │   ├── sortImages.m                 # Image sorting by slice/time
+│   │   └── applyGaussianFilter.m        # Noise reduction
+│   │
+│   ├── # Volume Processing
+│   │   ├── constructVolumes.m           # 3D volume assembly
+│   │   ├── upsampleVolumes.m            # Z-direction upsampling
+│   │   ├── registerVolumes.m            # 3D rigid registration
+│   │   ├── extractRegistrationParams.m   # Motion parameters extraction
+│   │   ├── plotRegistrationParameters.m  # Registration visualization
+│   │   ├── correctImagePositioning.m     # Slice order correction
+│   │   └── displayVolumes.m             # Registration results display
+│   │
+│   ├── # Brain Analysis
+│   │   ├── performSkullStripping.m      # Brain extraction
+│   │   ├── computePrincipalAxes.m       # PCA-based axis computation
+│   │   └── calculate_brain_axes.m        # Axis calculation helper
+│   │
+│   ├── # Perfusion Processing
+│   │   ├── calculateTCCs.m              # Concentration curves
+│   │   ├── computeGlobalAIF.m           # Arterial input function
+│   │   ├── computeGlobalVOF.m           # Venous output function
+│   │   └── computeGlobalAIF_VOF.m       # AIF/VOF computation
+│   │
+│   └── # Maps Generation
+│       ├── computeResidueFunctions.m     # Residue function handler
+│       ├── *ResidueFunctions_*SVD.m     # SVD deconvolution methods
+│       ├── computePerfusionMaps.m        # Individual map generation
+│       ├── computePerfusionMapsAll.m     # Full perfusion analysis
+│       ├── savePerfusionMapImages.m      # Map export
+│       └── select_colormap.m             # Colormap handling
+│
+├── resources/                       # Support files
+│   └── PMA_lut.csv                 # SIEMENS CT colormap lookup
+│
+└── docs/                           # Documentation and examples
 ```
+
 ## Requirements
 
-- **MATLAB:** Version 24.2
-- **Image Processing Toolbox:** Version 24.2
-- **Statistics and Machine Learning Toolbox:** Version 24.2
-- **Parallel Computing Toolbox:** Version 24.2
+- **Image Processing Toolbox:** 
+- **Statistics and Machine Learning Toolbox:**
+- **Parallel Computing Toolbox:** 
 - **Brain Extraction from CT and CTA Images** (available in the MATLAB Add-Ons, [1])
 
 ## How to Run the Code
